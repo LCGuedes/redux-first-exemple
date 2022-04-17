@@ -1,0 +1,81 @@
+import { configureStore } from "@reduxjs/toolkit";
+import counterReducer from "../features/counter/counterSlice";
+
+const Store = configureStore({
+    reducer: {
+        counter: counterReducer
+    }
+});
+
+export default Store;
+
+/*
+    - configureStore requires that we pass in a reducer argument.
+
+    - Our application might be made up of many different features, and each of those features might have its own reducer function. 
+
+    - When we call configureStore, we can pass in all of the different reducers in an object. The key names in the object will define the keys in our final state value.
+
+    - We have a file named features/counter/counterSlice.js that exports a reducer function for the counter logic. We can import that counterReducer function here, and include it when we create the store.
+
+    - When we pass in an object like {counter: counterReducer}, that says that we want to have a state.counter section of our Redux state object, and that we want the counterReducer function to be in charge of deciding if and how to update the state.counter section whenever an action is dispatched.
+
+    - 
+
+
+
+
+*/
+
+
+
+1) Redux Slices
+
+    - A "slice" is a collection of Redux reducer logic and actions for a single feature in your app.
+
+    import { configureStore } from '@reduxjs/toolkit'
+    import usersReducer from '../features/users/usersSlice'
+    import postsReducer from '../features/posts/postsSlice'
+    import commentsReducer from '../features/comments/commentsSlice'
+
+    export default configureStore({
+        reducer: {
+            users: usersReducer,
+            posts: postsReducer,
+            comments: commentsReducer
+        }
+    });
+
+    - state.users, state.posts, and state.comments are each a separate "slice" of the Redux state. Since usersReducer is responsible for updating the state.users slice, we refer to it as a "slice reducer" function.
+
+2) Reducers and State Structure
+
+    - 
+
+3) Creating Slice Reducers and Actions​
+
+    - Clicking the different buttons in the UI dispatched three different Redux action types:
+
+        {type: "counter/increment"}
+        {type: "counter/decrement"}
+        {type: "counter/incrementByAmount"}
+
+    - We know that actions are plain objects with a type field, the type field is always a string, and we typically have "action creator" functions that create and return the action objects. So where are those action objects, type strings, and action creators defined?
+
+    - Redux Toolkit has a function called createSlice, which takes care of the work of generating action type strings, action creator functions, and action objects.
+
+    - The string from the name option is used as the first part of each action type, and the key name of each reducer function is used as the second part. So, the "counter" name + the "increment" reducer function generated an action type of {type: "counter/increment"}.
+
+    - In addition to the name field, createSlice needs us to pass in the initial state value for the reducers, so that there is a state the first time it gets called. In this case, we're providing an object with a value field that starts off at 0.
+
+        console.log(counterSlice.actions.increment())
+        // {type: "counter/increment"}
+
+    - It also generates the slice reducer function that knows how to respond to all these action types:
+
+        const newState = counterSlice.reducer(
+            { value: 10 },
+            counterSlice.actions.increment()
+        )
+        console.log(newState)
+        // {value: 11}
